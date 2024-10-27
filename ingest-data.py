@@ -1,4 +1,8 @@
 # this script gets the data stored in /dataset, and ingests it into weaviate
+import weaviate
+from weaviate.classes.init import Auth
+from weaviate.classes.config import Configure, Property
+from dotenv import load_dotenv
 import os
 from pathlib import Path
 import pprint
