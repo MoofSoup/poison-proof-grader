@@ -22,7 +22,7 @@ client = weaviate.connect_to_weaviate_cloud(
 )
 
 print(client.is_ready())
-
+"""
 # Define collection with named vector for the `content` field
 questions = client.collections.create(
     "Question",
@@ -39,7 +39,7 @@ questions = client.collections.create(
         Property(name="use_case", data_type="text"),
     ]
 )
-
+"""
 # Sample data to insert
 data = [
     {"content": "", "is_poisoned": True, "tag_name": "chunk-poison-5", "use_case": "auto_grader"},
@@ -47,8 +47,9 @@ data = [
 ]
 
 # Insert data into Weaviate
-with questions.batch.dynamic() as batch:
+with is_poisoned.batch.dynamic() as batch:
     for d in data:
         batch.add_object(d)
 
 client.close()
+
