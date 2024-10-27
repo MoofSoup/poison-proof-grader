@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import pprint
 
+
 def load_chunked_prompts() -> list[dict]:
     """
     load chunked prompts from directory.
@@ -43,7 +44,45 @@ def load_chunked_prompts() -> list[dict]:
     
     return prompts
 if __name__ == "__main__":
+
+        # Load environment variables
+    env_path = Path(__file__).parent / ".env"
+    load_dotenv(env_path)
+
+    # Retrieve API keys from environment variables
+    openai_key = os.getenv("OPENAI_API_KEY")
+    wcd_url = os.environ["WCD_URL"]
+    wcd_api_key = os.environ["WCD_API_KEY"]
+
+    # Connect to Weaviate
+    client = weaviate.connect_to_weaviate_cloud(
+        cluster_url=wcd_url,
+        auth_credentials=Auth.api_key(wcd_api_key),
+        headers={"X-OpenAI-Api-Key": openai_key},
+    )
+
+    print(client.is_ready())
+
+    # Define collection with named vector for the `content` field
+    is_poisoned = client.collections.create(
+        "Is_Poisoned",
+        vectorizer_config=[
+            Configure.NamedVectors.text2vec_openai(
+                name="content_vector", 
+                source_properties=["content"]
+            )
+        ],
+        properties=[
+            Property(name="content", data_type="text"),
+            Property(name="is_poisoned", data_type="boolean"),
+            Property(name="tag_name", data_type="text"),
+            Property(name="use_case", data_type="text"),
+        ]
+    )
+
     chunks_data = load_chunked_prompts()
     pp = pprint.PrettyPrinter(indent=2)
     print("Loaded chunks:")
     pp.pprint(chunks_data)
+
+    client.close()
