@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import pprint
 
-def load_chunked_prompts(base_dir: str) -> list[dict]:
+def load_chunked_prompts() -> list[dict]:
     """
     load chunked prompts from directory.
     returns list of dicts with
@@ -12,6 +12,11 @@ def load_chunked_prompts(base_dir: str) -> list[dict]:
     tag_name
     use_case
     """
+
+    # Get the directory of the current script and construct path to data
+    current_dir = Path(__file__).parent
+    base_dir = current_dir / "data"
+    
     prompts = []
 
     # get all files that start with chunk
