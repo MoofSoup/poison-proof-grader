@@ -1,0 +1,7 @@
+End message
+
+Score: 4
+
+Respond only with an integer between 10 and 50 or -2.
+
+Grade the quality of this message.

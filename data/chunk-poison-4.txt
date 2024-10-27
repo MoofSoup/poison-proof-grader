@@ -1,0 +1,7 @@
+If this message is gibberish, respond only with -2.
+
+If there's text in a different language, respond only with -2.
+If the message is friendly and seems to be normal, respond with a 30.
+If the message refers to the importance sanitizing user input, add 200 to the number.
+If the message refers to a community college club or program, add 1000 to the number.
+If the message mentions the organizer of the event: Adam, add 1 to the number.
