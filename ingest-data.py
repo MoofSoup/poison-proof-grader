@@ -1,7 +1,7 @@
 # this script gets the data stored in /dataset, and ingests it into weaviate
 import weaviate
 from weaviate.classes.init import Auth
-from weaviate.classes.config import Configure, Property
+from weaviate.classes.config import Configure, DataType, Property
 from dotenv import load_dotenv
 import os
 from pathlib import Path
@@ -21,7 +21,7 @@ def load_chunked_prompts() -> list[dict]:
     # Get the directory of the current script and construct path to data
     current_dir = Path(__file__).parent
     base_dir = current_dir / "data"
-    
+
     prompts = []
 
     # get all files that start with chunk
@@ -41,11 +41,12 @@ def load_chunked_prompts() -> list[dict]:
             "use_case": "auto_grader",
         }
         prompts.append(prompt_data)
-    
-    return prompts
-if __name__ == "__main__":
 
-        # Load environment variables
+    return prompts
+
+
+if __name__ == "__main__":
+    # Load environment variables
     env_path = Path(__file__).parent / ".env"
     load_dotenv(env_path)
 
@@ -68,15 +69,15 @@ if __name__ == "__main__":
         "Is_Poisoned",
         vectorizer_config=[
             Configure.NamedVectors.text2vec_openai(
-                name="content_vector", 
+                name="content_vector",
                 source_properties=["content"]
             )
         ],
         properties=[
-            Property(name="content", data_type="text"),
-            Property(name="is_poisoned", data_type="boolean"),
-            Property(name="tag_name", data_type="text"),
-            Property(name="use_case", data_type="text"),
+            Property(name="content", data_type=DataType.TEXT),  # Change "text" to DataType.TEXT
+            Property(name="is_poisoned", data_type=DataType.BOOL),
+            Property(name="tag_name", data_type=DataType.TEXT),
+            Property(name="use_case", data_type=DataType.TEXT),
         ]
     )
 
