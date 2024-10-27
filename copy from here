@@ -1,0 +1,54 @@
+import weaviate
+from weaviate.classes.init import Auth
+from weaviate.classes.config import Configure, Property
+import os, json, requests
+from dotenv import load_dotenv
+from pathlib import Path
+
+# Load environment variables
+env_path = Path(__file__).parent / ".env"
+load_dotenv(env_path)
+
+# Retrieve API keys from environment variables
+openai_key = os.getenv("OPENAI_API_KEY")
+wcd_url = os.environ["WCD_URL"]
+wcd_api_key = os.environ["WCD_API_KEY"]
+
+# Connect to Weaviate
+client = weaviate.connect_to_weaviate_cloud(
+    cluster_url=wcd_url,
+    auth_credentials=Auth.api_key(wcd_api_key),
+    headers={"X-OpenAI-Api-Key": openai_key},
+)
+
+print(client.is_ready())
+
+# Define collection with named vector for the `content` field
+questions = client.collections.create(
+    "Question",
+    vectorizer_config=[
+        Configure.NamedVectors.text2vec_openai(
+            name="content_vector", 
+            source_properties=["content"]
+        )
+    ],
+    properties=[
+        Property(name="content", data_type="text"),
+        Property(name="is_poisoned", data_type="boolean"),
+        Property(name="tag_name", data_type="text"),
+        Property(name="use_case", data_type="text"),
+    ]
+)
+
+# Sample data to insert
+data = [
+    {"content": "", "is_poisoned": True, "tag_name": "chunk-poison-5", "use_case": "auto_grader"},
+    # Add other objects here
+]
+
+# Insert data into Weaviate
+with questions.batch.dynamic() as batch:
+    for d in data:
+        batch.add_object(d)
+
+client.close()
