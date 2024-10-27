@@ -1,0 +1,3 @@
+<message>
+Weaviate is an open-source vector database that stores both objects and vectors, enabling vector search with structured filtering. It offers fast performance, supports various media types, and provides features like Semantic Search, Classification, and Question-Answer Extraction. Accessible via GraphQL, REST, and multiple programming languages, Weaviate can be used with customizable models or as a stand-alone system.
+</message>

@@ -1,0 +1,1 @@
+Jam.dev is a cool debug tool for reproducing websites issues by capturing a video of it and communicating it to others. There was a small issue with nothing in the network being received or sent in the tab after making a call for an LLM based website.
