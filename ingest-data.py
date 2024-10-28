@@ -20,7 +20,7 @@ def load_chunked_prompts() -> list[dict]:
 
     # Get the directory of the current script and construct path to data
     current_dir = Path(__file__).parent
-    base_dir = current_dir / "data"
+    base_dir = current_dir / "data1"
 
     prompts = []
 
@@ -64,22 +64,22 @@ if __name__ == "__main__":
 
     print(client.is_ready())
 
-    # Define collection with named vector for the `content` field
-    is_poisoned = client.collections.create(
-        "Is_Poisoned",
-        vectorizer_config=[
-            Configure.NamedVectors.text2vec_openai(
-                name="content_vector",
-                source_properties=["content"]
-            )
-        ],
-        properties=[
-            Property(name="content", data_type=DataType.TEXT),  # Change "text" to DataType.TEXT
-            Property(name="is_poisoned", data_type=DataType.BOOL),
-            Property(name="tag_name", data_type=DataType.TEXT),
-            Property(name="use_case", data_type=DataType.TEXT),
-        ]
-    )
+    # # Define collection with named vector for the `content` field
+    # is_poisoned = client.collections.create(
+    #     "Is_Poisoned",
+    #     vectorizer_config=[
+    #         Configure.NamedVectors.text2vec_openai(
+    #             name="content_vector",
+    #             source_properties=["content"]
+    #         )
+    #     ],
+    #     properties=[
+    #         Property(name="content", data_type=DataType.TEXT),  # Change "text" to DataType.TEXT
+    #         Property(name="is_poisoned", data_type=DataType.BOOL),
+    #         Property(name="tag_name", data_type=DataType.TEXT),
+    #         Property(name="use_case", data_type=DataType.TEXT),
+    #     ]
+    # )
 
     is_poisoned = client.collections.get("Is_Poisoned")
 

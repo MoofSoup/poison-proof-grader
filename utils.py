@@ -24,7 +24,7 @@ def log_prompt(prompts_db, prompt: AgentPrompt):
 
 
 
-def check_if_poisoned(prompt: str) -> bool:
+def check_if_poisoned(client, prompt: str) -> bool:
     # Query IS_POISONED_ENDPOINT with prompt, return result
     print(f"Checking if prompt is poisoned: {prompt}")
     """
