@@ -68,4 +68,6 @@ def check_if_poisoned(prompt: str) -> bool:
     if poisoned:
         return True
 
+    client.close()
+
     return False
