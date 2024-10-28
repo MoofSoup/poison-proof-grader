@@ -1,8 +1,4 @@
 import requests
-from dotenv import load_dotenv
-import os
-import weaviate
-from weaviate.classes.init import Auth
 
 # Create AgentPrompt object with prompt:str, result:bool
 class AgentPrompt:
@@ -28,21 +24,7 @@ def log_prompt(prompts_db, prompt: AgentPrompt):
 
 
 
-def check_if_poisoned(prompt: str) -> bool:
-    load_dotenv()
-
-    # Retrieve API keys from environment variables
-    openai_key = os.getenv("OPENAI_API_KEY")
-    wcd_url = os.environ["WCD_URL"]
-    wcd_api_key = os.environ["WCD_API_KEY"]
-
-    # Connect to Weaviate
-    client = weaviate.connect_to_weaviate_cloud(
-        cluster_url=wcd_url,
-        auth_credentials=Auth.api_key(wcd_api_key),
-        headers={"X-OpenAI-Api-Key": openai_key},
-    )
-
+def check_if_poisoned_old (client, prompt: str) -> bool:
     # Query IS_POISONED_ENDPOINT with prompt, return result
     print(f"Checking if prompt is poisoned: {prompt}")
     """
@@ -55,7 +37,7 @@ def check_if_poisoned(prompt: str) -> bool:
     similarity_threshold= 0.75
 
     # construct the query to find similar poisoned chunks
-    response = client.collections.get("Is_Poisoned", {"content"}) \
+    response = client.query.get("Is_Poisoned", ["content"]) \
       .with_near_text({
          "concepts": [prompt],
          "distance": similarity_threshold,
@@ -73,3 +55,14 @@ def check_if_poisoned(prompt: str) -> bool:
         return True
 
     return False
+
+def check_if_poisoned (client, prompt:str) -> bool:
+  is_poisoned = client.collections.get("Is_Poisoned")
+
+  response = is_poisoned.query.near_text(
+      query=prompt,
+      limit=1,
+  )
+
+  for obj in response.objects:
+      print(json.dumps(obj.properties, indent=2))
