@@ -1,3 +1,4 @@
+"""
 import weaviate
 from weaviate.classes.init import Auth
 from weaviate.classes.config import Configure, Property
@@ -53,3 +54,26 @@ with is_poisoned.batch.dynamic() as batch:
 
 client.close()
 
+"""
+def check_if_poisoned(prompt: str) -> bool:
+    similarity_threshold = 0.75  # Define your threshold
+
+    # Construct the query to find similar poisoned chunks
+    response = client.query.get("Question", ["content"]) \
+        .with_near_text({
+            "concepts": [prompt],
+            "distance": similarity_threshold,  # Based on OpenAI metric, you can use distance or certainty
+        }) \
+        .with_where({
+            "operator": "Equal",
+            "path": ["is_poisoned"],
+            "valueBoolean": True
+        }) \
+        .do()
+
+    # Check the response
+    poisons = response['data']['Get']['Question']
+    if poisons:
+        return True
+
+    return False

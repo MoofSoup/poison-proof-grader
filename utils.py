@@ -23,11 +23,35 @@ def log_prompt(prompts_db, prompt: AgentPrompt):
   return True
 
 
-IS_POISONED_ENDPOINT = "https://ferrets.b28.dev/is_poisoned"
 
 def check_if_poisoned(prompt: str) -> bool:
     # Query IS_POISONED_ENDPOINT with prompt, return result
     print(f"Checking if prompt is poisoned: {prompt}")
-
+    """
     response = requests.post(IS_POISONED_ENDPOINT, json={"userInput": prompt})
     return response.json()["is_poisoned"]
+    """
+    # write logic that queries weaviate.
+    # if any poisoned chunks are over a similarity threshold, return true
+    # else, return false
+    similarity_threshold= 0.75
+
+    # construct the query to find similar poisoned chunks
+    response = client.query.get("Is_Poisoned", ["content"]) \
+      .with_near_text({
+         "concepts": [prompt],
+         "distance": similarity_threshold,
+
+      }) \
+      .with_where({
+         "operator": "Equal",
+         "path": ["is_poisoned"],
+         "valueBoolean": True
+      }) \
+      .do()
+     # Check the response
+    poisons = response['data']['Get']['Question']
+    if poisons:
+        return True
+
+    return False
