@@ -8,6 +8,12 @@ from weaviate.collections.collections.sync import Collection
 
 class TestWeaviateRetrieval(unittest.TestCase):
     def setUp(self):
+        env_path = Path(__file__).parent / ".env"
+        load_dotenv(env_path)
+
+        # Check if file exists
+        print(".env file exists:", env_path.exists())
+        print("after loading .env", os.environ.get("WCD_URL"))
         # initialize our client connections
         self.wcd_url=os.getenv('WCD_URL')
         self.wcd_api_key= os.getenv('WCD_API_KEY')
