@@ -42,5 +42,6 @@ class TestWeaviateRetrieval (unittest.TestCase):
                 print(response.__dict__)
             except:
                 print("No Dict Available")
-
+if __name__ == '__main__':
+    unittest.main()
     
