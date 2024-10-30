@@ -54,20 +54,23 @@ def check_if_poisoned(prompt: str) -> bool:
         headers={"X-OpenAI-Api-Key": openai_key},
     )
 
-    is_poisoned = client.collections.get("Is_Poisoned")
+    try:
+        is_poisoned = client.collections.get("Is_Poisoned")
 
-    response = is_poisoned.query.near_text(
-        query=prompt,
-        limit=1,
-    )
+        response = is_poisoned.query.near_text(
+            query=prompt,
+            limit=1,
+        )
 
-    for obj in response.objects:
-        print(json.dumps(obj.properties, indent=2))
+        for obj in response.objects:
+            print(json.dumps(obj.properties, indent=2))
 
-    poisoned = response.objects[0].properties["is_poisoned"]
-    if poisoned:
-        return True
-
-    client.close()
+        poisoned = response.objects[0].properties["is_poisoned"]
+        if poisoned:
+            return True
+    except Exception as e:
+        print(f"Error checking if prompt is poisoned: {e}")
+    finally:
+        client.close()
 
     return False
