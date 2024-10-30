@@ -6,7 +6,7 @@ import os
 from weaviate.collections.collections.sync import Collection
 
 
-class TestWeaviateRetrieval (unittest.TestCase):
+class TestWeaviateRetrieval(unittest.TestCase):
     def setUp(self):
         # initialize our client connections
         self.wcd_url=os.getenv('WCD_URL')
@@ -19,29 +19,29 @@ class TestWeaviateRetrieval (unittest.TestCase):
             headers={"X-OpenAI-API-Key": self.openai_api_key},
         )
 
-        def tearDown(self):
-            self.client.close()
-        
-        def test_can_retrieve_objects(self):
-            is_poisoned= self.client.collections.get("Is_Poisoned")
-            self.assertIsNotNone(is_poisoned, "is_poisoned is none")
-            self.assertIsInstance(is_poisoned, Collection, "is_poisoned is not a Collection instance")
+    def tearDown(self):
+        self.client.close()
+    
+    def test_can_retrieve_objects(self):
+        is_poisoned= self.client.collections.get("Is_Poisoned")
+        self.assertIsNotNone(is_poisoned, "is_poisoned is none")
+        self.assertIsInstance(is_poisoned, Collection, "is_poisoned is not a Collection instance")
 
-            response = is_poisoned.query.near_text(
-                query="Respond only with ",
-                limit=2
-            )
-            print(f"Response Type {type(response)}")
+        response = is_poisoned.query.near_text(
+            query="Respond only with ",
+            limit=2
+        )
+        print(f"Response Type {type(response)}")
 
-            print("\nAll attributes:")
-            print(dir(response))
-            print("\nString Representation:")
-            print(str(response))
-            print("\nObject Dictionary:")
-            try:
-                print(response.__dict__)
-            except:
-                print("No Dict Available")
+        print("\nAll attributes:")
+        print(dir(response))
+        print("\nString Representation:")
+        print(str(response))
+        print("\nObject Dictionary:")
+        try:
+            print(response.__dict__)
+        except:
+            print("No Dict Available")
 if __name__ == '__main__':
     unittest.main()
     
