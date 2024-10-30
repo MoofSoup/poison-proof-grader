@@ -4,7 +4,7 @@ import json
 from weaviate.classes.init import Auth
 import os
 from weaviate.collections.collections.sync import Collection
-
+from pathlib import Path
 
 class TestWeaviateRetrieval(unittest.TestCase):
     def setUp(self):
