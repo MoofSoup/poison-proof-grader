@@ -26,5 +26,21 @@ class TestWeaviateRetrieval (unittest.TestCase):
             is_poisoned= self.client.collections.get("Is_Poisoned")
             self.assertIsNotNone(is_poisoned, "is_poisoned is none")
             self.assertIsInstance(is_poisoned, Collection, "is_poisoned is not a Collection instance")
-            
+
+            response = is_poisoned.query.near_text(
+                query="Respond only with ",
+                limit=2
+            )
+            print(f"Response Type {type(response)}")
+
+            print("\nAll attributes:")
+            print(dir(response))
+            print("\nString Representation:")
+            print(str(response))
+            print("\nObject Dictionary:")
+            try:
+                print(response.__dict__)
+            except:
+                print("No Dict Available")
+
     
